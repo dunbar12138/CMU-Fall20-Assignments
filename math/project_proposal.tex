@@ -1,0 +1,85 @@
+\documentclass[
+  % all of the below options are optional and can be left out
+  % course name (default: 2IL50 Data Structures)
+  course = {{16-811 Math Fundamentals for Robotics}},
+  % quartile (default: 3)
+  quartile = {{1}},
+  % assignment number/name (default: 1)
+  assignment = Classification\ by\ flow-based\ generative\ models,
+  % student name (default: Some One)
+  name = {{Kangle Deng}},
+  % student number, NOT S-number (default: 0123456)
+  % studentnumber = {{0123456 ; 0314159}},
+  % student email (default: s.one@student.tue.nl)
+  email = {{kangled@andrew.cmu.edu}},
+  % first exercise number (default: 1)
+  firstexercise = 1
+]{aga-document}
+
+\usepackage[colorlinks,linkcolor=blue]{hyperref}
+
+\begin{document}
+
+\noindent \textbf{Classification problem:} Given a training set $\{(x_i, y_i)\}_N$, where $x_i \in X$ are some features (can be multi-dimensional such as images), and $y_i \in Y$ is the corresponding label, the classification problem is to find some function $f(\cdot): X \rightarrow Y$. Once learned, one can apply such function $f$ to some test set to predict the label from the features.
+
+\vspace{0.5cm}
+
+\noindent \textbf{Naive Bayes Classifier:} A traditional likelihood-based method is to compare the posterior probability of the label $y$ given the feature $x$, which can be formulated as follows:
+
+\begin{equation*}
+    y_{predict} = \arg \max_{y} P(y | x) = \arg \max_{y} \frac{P(x,y)}{P(x)} = \arg \max_{y} P(x,y).
+\end{equation*}
+This method can only work when the distribution of $X$ and $Y$ are explicitly modeled, which is difficult in reality. People usually use simple Gaussian distributions to approximate them, but this is not true in many real situations.
+
+\vspace{0.5cm}
+
+\noindent \textbf{Flow-based Generative Models:} Given a distribution $x \sim p_X(x)$, a generative model provides an approximation to that distribution so that one can sample from it to generate new samples. Specifically for flow-based generative models. Given a random variable $z$ and its known probability density function $z\sim \pi(z)$, we would like to construct a new random variable using a 1-1 mapping function $x=f(z)$. The function $f$ is invertible, so $z=f^{-1}(x)$. Details of Flow-based Generative Models can be found at \href{https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html}{this link}.
+
+\vspace{0.5cm}
+
+\noindent \textbf{Classification by Flow-based Generative Models:} Since flow-based models are able to explicitly approximate distributions, we can use it along with Naive Bayes to build a classifier. Given a training set $\{(x_i, y_i)\}_N$, we find an invertible function $f$ that converts a simple distribution $Z$ (such as Gaussian or uniform) to the joint distribution of $(X,Y)$. Let $w = (x,y)$. It can be formulated as:
+
+\begin{equation*}
+    f(z) = w, \qquad f^{-1}(w) = z.
+\end{equation*}
+So the probability density function of $w$ is:
+
+\begin{equation*}
+    p_{(X,Y)}(w) = p_Z(z) |\det \frac{dz}{dw}| = p_Z(z) |\det \frac{dz}{dw}| = p_Z(z) |\det \frac{df^{-1}}{dw}|
+\end{equation*}
+where $\frac{df^{-1}}{dw}$ is the Jacobian determinant of the function $f$. Computing the Jacobian matrix is usually very expensive but flow-based models provide an easy way due to its well-designed network, which makes bayesian classification possible.
+
+\vspace{0.5cm}
+
+\noindent \textbf{Why this is interesting:} This setting is totally different from any other existing popular classification method. It can be nicely seen as an unsupervised method on the multimodal data $\{(x,y)\}$. Also, it falls into the generative classification model, while almost all of the existing popular methods are discriminative ones, that only models the edge of the distribution.
+
+\vspace{0.5cm}
+
+\noindent \textbf{Plans:} This would be an individual project. I plan to implement this idea in several popular classification tasks in the field of computer vision, natural language processing and so on.
+
+\begin{table}
+  \begin{center}
+    \begin{tabular}{lcc}
+      \toprule
+       & Cifar-10 & SVHN \\
+      \midrule
+ \textbf{Test Acc.} & $10.6\%$  & $13.4\%$  \\
+    \end{tabular}
+  \end{center}
+\caption{\textbf{} } 
+\end{table}
+
+\begin{table}
+  \begin{center}
+    \begin{tabular}{lc}
+      \toprule
+       & Test Acc. \\
+      \midrule
+ \textbf{Cifar-10} & $10.6\%$  \\
+ \textbf{SVHN} & $13.4\%$ \\
+    \end{tabular}
+  \end{center}
+\caption{\textbf{} } 
+\end{table}
+
+\end{document}

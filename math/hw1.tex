@@ -1,0 +1,691 @@
+\documentclass[
+  % all of the below options are optional and can be left out
+  % course name (default: 2IL50 Data Structures)
+  course = {{16-811 Math Fundamentals for Robotics}},
+  % quartile (default: 3)
+  quartile = {{1}},
+  % assignment number/name (default: 1)
+  assignment = 1,
+  % student name (default: Some One)
+  name = {{Kangle Deng}},
+  % student number, NOT S-number (default: 0123456)
+  % studentnumber = {{0123456 ; 0314159}},
+  % student email (default: s.one@student.tue.nl)
+  email = {{kangled@andrew.cmu.edu}},
+  % first exercise number (default: 1)
+  firstexercise = 1
+]{aga-homework}
+
+
+\begin{document}
+
+\exercise
+I implement the $PA=LDU$ decomposition algorithm in the function $LDU\_decomposition(A)$ in $LDU.py$. I also extend this basic algorithm so that it can be applied to non-square matrix $A_{m\times n}$, assuming that $m \ge n$ and $rank(A) = n$.
+
+There are several examples in $LDU.py$ that prove the implementation works. The error $||PA-LDU||$ is used to evaluate the correctness.
+
+\subexercise
+Validate the correctness on square matrix without swapping.
+\begin{equation*}
+    \left(
+    \begin{array}{ccc}
+        1 & -2 & 1 \\
+        1 & 2 & 2 \\
+        2 & 3 & 4
+    \end{array}
+    \right) =
+    \left(
+    \begin{array}{ccc}
+        1 & 0 & 0 \\
+        1 & 1 & 0 \\
+        2 & 1.75 & 1
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        1 & 0 & 0 \\
+        0 & 4 & 0 \\
+        0 & 0 & 0.25
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        1 & -2 & 1 \\
+        0 & 1 & 0.25 \\
+        0 & 0 & 1
+    \end{array}
+    \right).
+\end{equation*}
+
+\subexercise
+Validate the correctness on square matrix with swapping.
+\begin{equation*}
+    \left(
+    \begin{array}{ccc}
+        1 & 0 & 0 \\
+        0 & 0 & 1 \\
+        0 & 1 & 0
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        1 & 1 & 0 \\
+        1 & 1 & 2 \\
+        4 & 2 & 3
+    \end{array}
+    \right) =
+    \left(
+    \begin{array}{ccc}
+        1 & 0 & 0 \\
+        4 & 1 & 0 \\
+        1 & 0 & 1
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        1 & 0 & 0 \\
+        0 & -2 & 0 \\
+        0 & 0 & 2
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        1 & 1 & 0 \\
+        0 & 1 & -1.5 \\
+        0 & 0 & 1
+    \end{array}
+    \right).
+\end{equation*}
+
+\subexercise
+Validate the correctness on non-square matrix.
+\begin{equation*}
+    \left(
+    \begin{array}{cccc}
+        1 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 \\
+        0 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 1
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        3 & 5 & 2 \\
+        1 & 4 & 3 \\
+        2 & 0 & 1 \\
+        1 & 1 & 1
+    \end{array}
+    \right) =
+    \left(
+    \begin{array}{cccc}
+        1 & 0 & 0 & 0 \\
+        0.33 & 1 & 0 & 0 \\
+        0.67 & -1.43 & 1 & 0 \\
+        0.33 & -0.29 & 0.33 & 1
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{cccc}
+        3 & 0 & 0 & 0 \\
+        0 & 2.33 & 0 & 0 \\
+        0 & 0 & 3 & 0 \\
+        0 & 0 & 0 & 1
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        1 & 1.67 & 0.67 \\
+        0 & 1 & 1 \\
+        0 & 0 & 1 \\
+        0 & 0 & 0
+    \end{array}
+    \right).
+\end{equation*}
+
+\exercise
+\subexercise
+I use my code in Exercise 1 to calculate the $PA=LDU$ decomposition of these matrices.
+\begin{equation*}
+    A_1 = 
+    \left(
+    \begin{array}{ccc}
+        10 & -10 & 0 \\
+        0 & -4 & 2 \\
+        2 & 0 & 5
+    \end{array}
+    \right) =
+    \left(
+    \begin{array}{ccc}
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0.2 & -0.5 & 1
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        10 & 0 & 0 \\
+        0 & -4 & 0 \\
+        0 & 0 & -4
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        1 & -1 & 0 \\
+        0 & 1 & -0.5 \\
+        0 & 0 & 1
+    \end{array}
+    \right).
+\end{equation*}
+\begin{equation*}
+\begin{aligned}
+    A_2 & = 
+    \left(
+    \begin{array}{cccc}
+        5 & -5 & 0 & 0 \\
+        5 & 5 & 5 & 0 \\
+        0 & -1 & 4 & 1 \\
+        0 & 4 & -1 & 2 \\
+        0 & 0 & 2 & 1
+    \end{array}
+    \right) 
+    \\ 
+    & =
+    \left(
+    \begin{array}{ccccc}
+        1 & 0 & 0 & 0 & 0 \\
+        1 & 1 & 0 & 0 & 0 \\
+        0 & -0.1 & 1 & 0 & 0 \\
+        0 & 0.4 & -0.67 & 1 & 0 \\
+        0 & 0 & 0.44 & 0.21 & 1
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccccc}
+        5 & 0 & 0 & 0 & 0 \\
+        0 & 10 & 0 & 0 & 0 \\
+        0 & 0 & 4.5 & 0 & 0 \\
+        0 & 0 & 0 & 2.67 & 0 \\
+        0 & 0 & 0 & 0 & 1
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{cccc}
+        1 & -1 & 0 & 0 \\
+        0 & 1 & 0.5 & 0 \\
+        0 & 0 & 1 & 0.22 \\
+        0 & 0 & 0 & 1 \\
+        0 & 0 & 0 & 0
+    \end{array}
+    \right).
+\end{aligned}
+\end{equation*}
+\begin{equation*}
+    A_3 = 
+    \left(
+    \begin{array}{ccc}
+        1 & 1 & 1 \\
+        10 & 2 & 9 \\
+        8 & 0 & 7
+    \end{array}
+    \right) =
+    \left(
+    \begin{array}{ccc}
+        1 & 0 & 0 \\
+        10 & 1 & 0 \\
+        8 & 1 & 1
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        1 & 0 & 0 \\
+        0 & -8 & 0 \\
+        0 & 0 & 0
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        1 & 1 & 1 \\
+        0 & 1 & 0.125 \\
+        0 & 0 & 0
+    \end{array}
+    \right).
+\end{equation*}
+
+\subexercise
+I use $numpy.linalg.svd$ to calculate the SVD decompositions of these matrices.
+
+\begin{equation*}
+    A_1 = 
+    \left(
+    \begin{array}{ccc}
+        10 & -10 & 0 \\
+        0 & -4 & 2 \\
+        2 & 0 & 5
+    \end{array}
+    \right) =
+    \left(
+    \begin{array}{ccc}
+        -0.98 & 0.02 & -0.22 \\
+        -0.20 & -0.51 & 0.84 \\
+        -0.10 & 0.86 & 0.50
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        14.50 & 0 & 0 \\
+        0 & 5.95 & 0 \\
+        0 & 0 & 1.86
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        -0.69 & 0.73 & 0.01 \\
+        0.32 & 0.31 & -0.89 \\
+        -0.65 & -0.61 & -0.45
+    \end{array}
+    \right).
+\end{equation*}
+\begin{equation*}
+\begin{aligned}
+    A_2 & = 
+    \left(
+    \begin{array}{cccc}
+        5 & -5 & 0 & 0 \\
+        5 & 5 & 5 & 0 \\
+        0 & -1 & 4 & 1 \\
+        0 & 4 & -1 & 2 \\
+        0 & 0 & 2 & 1
+    \end{array}
+    \right) 
+    \\ 
+    & =
+    \left(
+    \begin{array}{ccccc}
+        0.11 & 0.87 & 0.37 & -0.31 & -0.02 \\
+        -0.93 & 0.15 & 0.16 & 0.28 & 0.02 \\
+        -0.20 & 0.23 & -0.75 & -0.32 & -0.50 \\
+        -0.24 & -0.41 & 0.38 & -0.77 & -0.18 \\
+        -0.14 & 0.06 & -0.35 & -0.36 & 0.85
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{cccc}
+        9.14 & 0 & 0 & 0  \\
+        0 & 7.80 & 0 & 0 \\
+        0 & 0 & 4.42 & 0 \\
+        0 & 0 & 0 & 2.24 \\
+        0 & 0 & 0 & 0
+    \end{array}
+    \right) 
+    \\ & \cdot
+    \left(
+    \begin{array}{cccc}
+        -0.45 & -0.65 & -0.60 & -0.09 \\
+        0.65 & -0.70 & 0.28 & -0.07 \\
+        0.61 & 0.28 & -0.74 & -0.08 \\
+        -0.05 & 0.09 & 0.09 & -0.99 \\
+    \end{array}
+    \right).
+\end{aligned}
+\end{equation*}
+\begin{equation*}
+    A_3 = 
+    \left(
+    \begin{array}{ccc}
+        1 & 1 & 1 \\
+        10 & 2 & 9 \\
+        8 & 0 & 7
+    \end{array}
+    \right) =
+    \left(
+    \begin{array}{ccc}
+        -0.09 & -0.57 & -0.82 \\
+        -0.79 & -0.46 & 0.41 \\
+        -0.61 & 0.68 & -0.41
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        17.28 & 0 & 0 \\
+        0 & 1.51 & 0 \\
+        0 & 0 & 0
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        -0.74 & -0.10 & -0.66 \\
+        0.13 & -0.99 & -0.01 \\
+        0.66 & 0.09 & -0.75
+    \end{array}
+    \right).
+\end{equation*}
+
+\exercise
+For $3\times 3$ matrix $A$, $Ax=b$ has one exact solution. \\
+\makebox[3cm]{$\Leftrightarrow$} $rank(A) = 3.$ \\
+\makebox[3cm]{$\Leftrightarrow$} $det(A) \ne 0.$
+
+\noindent If $det(A) = 0$, $Ax=b$ has zero exact solution. \\
+\makebox[3cm]{$\Leftrightarrow$} $b$ is not in the $Colspace(A)$. \\
+
+Therefore, to specify whether the system has zero, one, or many exact solutions, we should first calculate $det(A)$. If $det(A) \ne 0$, then $Ax=b$ has one exact solution. If $det(A) = 0$, then we should check whether $b$ is in the $Colspace(A)$. If that is true, then $Ax=b$ has many exact solutions. Otherwise, it has no exact solutions.
+
+\subexercise
+$det(A) = 0$, so $Ax = b$ has zero or many exact solutions.
+Compute the SVD decomposition of $A$, we get:
+
+\begin{equation*}
+    A = 
+    \left(
+    \begin{array}{ccc}
+        1 & 1 & 1 \\
+        10 & 2 & 9 \\
+        8 & 0 & 7
+    \end{array}
+    \right) =
+    \left(
+    \begin{array}{ccc}
+        -0.09 & -0.57 & -0.82 \\
+        -0.79 & -0.46 & 0.41 \\
+        -0.61 & 0.68 & -0.41
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        17.28 & 0 & 0 \\
+        0 & 1.51 & 0 \\
+        0 & 0 & 0
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        -0.74 & -0.10 & -0.66 \\
+        0.13 & -0.99 & -0.01 \\
+        0.66 & 0.09 & -0.75
+    \end{array}
+    \right).
+\end{equation*}
+
+Since $A$ has 2 non-zero singular values, $rank(A) = 2$. $Colspace(A)$ is spanned by $\{(1, 2, 0)^T, (1, 9, 7)^T\}$.
+
+Note that $b = (1, 3, 1)^T = \frac{6}{7}(1, 2, 0)^T + \frac{1}{7}(1, 9, 7)^T$. So $b$ is in $Colspace(A)$. This means $Ax = b$ has \textbf{many exact solutions}.
+
+The SVD solution is:
+\begin{equation*}
+    x_{row} = V \frac{1}{\Sigma} U^T b = (0.02, 0.86, 0.12)^T.
+\end{equation*}
+
+Note that $Nullspace(A)$ is spanned by $\{(7, 1, -8)^T\}$, as $A \cdot (7, 1, -8)^T = (0, 0, 0)^T$.
+
+\begin{equation*}
+    x_{all} = x_{row} + k\cdot x_{null} = (0.02, 0.86, 0.12)^T + k \cdot (7, 1, -8)^T, \quad k \in \mathbb{R}.
+\end{equation*}
+
+To verify the solution is true, we calculate:
+
+\begin{equation*}
+\begin{aligned}
+    Ax_{all} & = A(x_{row} + k\cdot x_{null}), \quad k \in \mathbb{R} \\
+    & = Ax_{row} + k\cdot Ax_{null}, \quad k \in \mathbb{R} \\
+    & = A \cdot (0.02, 0.86, 0.12)^T + k\cdot A \cdot (7, 1, -8)^T, \quad k \in \mathbb{R} \\
+    & = (1, 3, 1)^T + k \cdot (0, 0, 0)^T, \quad k \in \mathbb{R} \\
+    & = b.
+\end{aligned}
+\end{equation*}
+
+\subexercise
+
+Same as (a), $det(A) = 0$, so $Ax = b$ has zero or many exact solutions. And $Colspace(A)$ is spanned by $\{(1, 2, 0)^T, (1, 9, 7)^T\}$.
+
+Note than $rank(\{(1, 2, 0)^T, (1, 9, 7)^T, b\}) = 3$ where $b = (3, 2, 2)^T$, so $b$ is not in $Colspace(A)$. Therefore, $Ax=b$ has \textbf{zero exact solutions}.
+
+The SVD solution is:
+\begin{equation*}
+    x = V \frac{1}{\Sigma} U^T b = (0.02, 0.86, 0.12)^T.
+\end{equation*}
+
+This is exactly the solution to the minimize problem $\min\limits_{x}||Ax-b||$, which actually projects $b$ onto $Colspace(A)$, and solves the system $Ax=b'$, where $b'$ is the projection of $b$ onto $Colspace(A)$.
+
+% Also, this solution can be extended to: $x_{all} = x_{row} + k\cdot x_{null} = (0.02, 0.86, 0.12)^T + k \cdot (7, 1, -8)^T, \quad k \in \mathbb{R}.$ Because the residual term $x_{null}$ does not affect the value of $Ax_{all}$.
+
+To verify this is true, calculate the residual between $b$ and $Ax$ and get $(2, -1, 1)^T$. Note that $(2, -1, 1) \cdot (1, 2, 0) = 0$ and $(2, -1, 1) \cdot (1, 9, 7) = 0$. This means $Ax-b$ is perpendicular to $Colspace(A)$, which implies $Ax$ is the projection of $b$ onto $Colspace(A)$, and thus the best approximation.
+
+\subexercise
+$det(A) = 160$, so $Ax=b$ has \textbf{one exact solution}. Compute the SVD decomposition of $A$, we get:
+
+\begin{equation*}
+    A = 
+    \left(
+    \begin{array}{ccc}
+        10 & -10 & 0 \\
+        0 & -4 & 2 \\
+        2 & 0 & 5
+    \end{array}
+    \right) =
+    \left(
+    \begin{array}{ccc}
+        -0.98 & 0.02 & -0.22 \\
+        -0.20 & -0.51 & 0.84 \\
+        -0.10 & 0.86 & 0.50
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        14.50 & 0 & 0 \\
+        0 & 5.95 & 0 \\
+        0 & 0 & 1.86
+    \end{array}
+    \right) \cdot
+    \left(
+    \begin{array}{ccc}
+        -0.69 & 0.73 & 0.01 \\
+        0.32 & 0.31 & -0.89 \\
+        -0.65 & -0.61 & -0.45
+    \end{array}
+    \right).
+\end{equation*}
+
+The solution is:
+\begin{equation*}
+    x = V \frac{1}{\Sigma} U^T b = (-1, -2, -3)^T.
+\end{equation*}
+
+To verify the solution is true, we calculate:
+
+\begin{equation*}
+\begin{aligned}
+    Ax = A \cdot (-1, -2, -3)^T = (10, 2, 13)^T = b.
+\end{aligned}
+\end{equation*}
+
+\subexercise
+\begin{itemize}
+    \item \textbf{Similarity:} Both solutions in (a) and (b) are numerically the same. 
+    \item \textbf{Difference:} The solution in (a) is the exact solution to the system $Ax=b$, while the one in (b) is an approximate solution which minimizes the error between $Ax$ and $b$.
+\end{itemize}
+
+\exercise
+\subexercise
+\begin{itemize}
+    \item For any vector $k \cdot u$ that is parallel to $u$, $\quad k \in \mathbb{R}$, \\
+    $A \cdot (k \cdot u) = k \cdot (A \cdot u) = k \cdot (u - uu^Tu) = k \cdot (u - u) = 0$.
+    \item For any vector $v$ that is perpendicular to $u$, \\
+    $A \cdot v = (I - uu^T)\cdot v = v - uu^Tv = v$.
+\end{itemize}
+
+For any vector $\alpha$, we can decompose it as follow:
+\begin{equation*}
+    \alpha = k \cdot u + t \cdot v,
+\end{equation*}
+where $v$ is some unit vector that is perpendicular to $u$.
+
+Then $A\cdot \alpha = A \cdot (k \cdot u + t \cdot v) = t \cdot v$.
+
+This means \textbf{$A$ projects $\alpha$ onto the space that is perpendicular to $u$.}
+
+\subexercise
+Geometrically, an eigenvector, corresponding to a real nonzero eigenvalue, points in a direction in which it is stretched by the transformation and the eigenvalue is the factor by which it is stretched. (This sentence is borrowed from WIKIPEDIA.)
+
+In this case, for any vector that is perpendicular to $u$, $A$ does not change its direction, therefore these vectors are exactly eigenvectors. Neither does $A$ change their length, so the corresponding eigenvalue is 1. For any other vector (parallel to $u$), $A$ maps them to 0.
+
+Therefore, \textbf{$A$ has 2 eigenvalues: one is 1, which corresponds to $n-1$ eigenvectors that is perpendicular to $u$; and the other eigenvalue is 0.}
+
+\subexercise
+By definition, null space of $A$ is $\{v | Av = 0\}$. From the above analysis, null space of $A$ is $\{k \cdot u | k \in \mathbb{R}\}$, which is the line parallel to $u$.
+
+\subexercise
+$A^2 = (I - uu^T)^2 = I - 2uu^T + uu^Tuu^T = I - 2uu^T + uu^T = I - uu^T = A$
+
+\exercise
+
+% Select the centroid of both point sets as the center of rotation. Since the center of rotation cannot move through rotation, the translation from centroid of $\{p_i\}$ to centroid of $\{q_i\}$ should be exactly the translation of the object. This can be formulated as:
+
+% \begin{equation*}
+%     b = (\sum \limits_{i=1}^{n}q_i - \sum \limits_{i=1}^{n}p_i)/n.
+% \end{equation*}
+
+% For each pair of points, we have: $q_i = Ap_i + b$, where $A$ is the rotation matrix and $b$ is the translation vector. Writing it in the form of matrix, we have:
+
+% \begin{equation*}
+%     Q = AP + B,
+% \end{equation*}
+% where each column of $Q$ and $P$ is respectively $q_i$ and $p_i$, and $B_{3\times n} = b \cdot (1,1,\cdots, 1)_{n}$.
+
+% Since $Q, P$ and $B$ are all known, we can calculate $A$ using the pseudo inverse of $P$, which is given by SVD decomposition.
+
+% \begin{equation*}
+%     A = (Q-B)V\frac{1}{\Sigma}U^T,
+% \end{equation*}
+% where $P = U\Sigma V^T$.
+
+% Therefore, we can specify an algorithm in pseudo-code as follows.
+
+% \begin{algorithm}[H]
+%   \caption{Solve($A, v$)}
+%   \KwIn{matrix $P_{3\times n}$ and $Q_{3\times n}$, where each column $p_i$ and $q_i$ are a pair of 3D points.}
+%   \KwOut{a rotation matrix $A$ and a translation vector $b$.}
+
+%   $b \leftarrow (0, 0, 0)^T$ \;
+%   \For{$i \leftarrow 1$ \To $n$}{
+%     $b \leftarrow b + Q[i,:] - P[i,:]$
+%   }
+%   $b \leftarrow b / n$ \;
+%   $B \leftarrow b^T \cdot (1,1,\cdots, 1)_{n}$ \;
+%   $U, \Sigma, V^T \leftarrow SVD\_decompose(P)$ \;
+%   $A \leftarrow (Q-B)V\frac{1}{\Sigma}U^T$ \;
+%   \Return{$A, b$}
+% \end{algorithm}
+
+% See $ex5.py$ for implementation in python and several running examples.
+
+Suppose we select the centroid of the object as the reference system. Then the movement is just about rotation without any translation, which can be formulated as:
+
+\begin{equation*}
+    A(p_i - \Bar{p}) = q_i - \Bar{q}, \quad i = 1, 2, \cdots, n,
+\end{equation*}
+where $\Bar{p}$ and $\Bar{q}$ are the centroids of $\{p_i\}$ and $\{q_i\}$.
+
+Let $\hat{p_i} = p_i - \Bar{p}$ and $\hat{q_i} = q_i - \Bar{q}$. Assemble all the $\{\hat{p_i}\}$ into a matrix $P$ and all the $\{\hat{q_i}\}$ into a matrix $Q$. The movement equation can be rewritten as:
+
+\begin{equation*}
+    AP = Q.
+\end{equation*}
+
+Since the object is a rigid body, the shape of the object cannot be changed. So the relative location among those given points are also fixed, which means 1) the lengths of $\{\hat{p_i}\}$ are the same as the lengths of $\{\hat{q_i}\}$, 2) the angles among $\{\hat{p_i}\}$ are the same as  $\{\hat{q_i}\}$. This can be formulated as:
+
+\begin{equation*}
+    \hat{p_i}^T\hat{p_j} = \hat{q_i}^T\hat{q_j}, \quad \forall i, j = 1, 2, \cdots, n.
+\end{equation*}
+
+This is equivalent to:
+\begin{equation*}
+    P^TP = Q^TQ.
+\label{eq:1}
+\end{equation*}
+
+% Then we perform diagonal decomposition on 3 real symmetric matrices: $P^TP, PP^T, QQ^T$, and get:
+
+% \begin{equation*}
+%     P^TP = Q^TQ = V \Sigma V^T, \quad PP^T = U_1\Sigma_1 U_1^T, \quad QQ^T = U_2 \Sigma_2 U_2^T,
+% \end{equation*}
+% where $V, U_1$, and $U_2$ are all ortho-normal matrices, and $\Sigma, \Sigma_1$ and $\Sigma_2$ are all diagonal matrices. Due to the fact that $PP^T$ and $P^TP$ have the same eigenvalues, the elements of $\Sigma$ and $\Sigma_1$ are the same despite of their different shapes. Considering the same fact about $QQ^T$ and $Q^TQ$, we have $\Sigma_1 = \Sigma_2$.
+
+% Since the SVD decomposition of $P$ can be obtained by the diagonal decomposition of $P^TP$ and $PP^T$, we have:
+% \begin{equation}
+%     P = U_1\Sigma_0 V^T, \qquad Q = U_2\Sigma_0 V^T,
+% \label{eq:SVD}
+% \end{equation}
+% where $\Sigma_0$ is a $3 \times n$ matrix with the square root of elements in $\Sigma$ as its diagonal.
+
+Then we perform diagonal decomposition on this real symmetric matrix and get:
+
+\begin{equation*}
+    P^TP = Q^TQ = V \Sigma V^T,
+\end{equation*}
+where $V$ is an ortho-normal matrices, and $\Sigma$ is a diagonal matrix. Considering the relationship between SVD decomposition of $P$ and diagonal decomposition of $P^TP$, and the same fact about $Q$, there exists:
+
+\begin{equation}
+    P = U_1\Sigma_0 V^T, \qquad Q = U_2\Sigma_0 V^T,
+\label{eq:SVD}
+\end{equation}
+where both $U_1$ and $U_2$ are ortho-normal matrices, and $\Sigma_0$ is a $3 \times n$ matrix with the square root of elements in $\Sigma$ as its diagonal.
+
+Combing the above equations and $AP=Q$, we have:
+\begin{equation*}
+    AU_1 \Sigma_0 V^T = U_2\Sigma_0 V^T.
+\end{equation*}
+
+Since $A$ is also an ortho-normal matrix, $A=U_2U_1^T$ is a solution to the above equation. After calculating $A$, we can calculate the translation vector $b$ by:
+
+\begin{equation*}
+    b = \Bar{q} - A\Bar{p}.
+\end{equation*}
+
+Now we can calculate $A$ and $b$ by first diagonally decomposing $PP^T$ and $QQ^T$ and obtaining $U_1$ and $U_2$. However, we can even simplify the calculation by considering the matrix $QP^T$. From Eq.(\ref{eq:SVD}), we have:
+
+\begin{equation*}
+    QP^T = U_2 \Sigma_1 U_1^T.
+\end{equation*}
+
+This is exactly the SVD decomposition of the matrix $QP^T$.
+
+Therefore, we can specify an algorithm in pseudo-code as follows.
+
+\begin{algorithm}[H]
+  \caption{Solve($P, Q$)}
+  \KwIn{matrix $P_{3\times n}$ and $Q_{3\times n}$, where each column $p_i$ and $q_i$ are a pair of 3D points.}
+  \KwOut{a rotation matrix $A$ and a translation vector $b$.}
+
+  $\Bar{p} \leftarrow P.columns.mean()$ \;
+  $\Bar{q} \leftarrow Q.columns.mean()$ \;
+  \For{$i \leftarrow 1$ \To $n$}{
+    $P[:,i] \leftarrow P[:,i] - \Bar{p}$ \;
+    $Q[:,i] \leftarrow Q[:,i] - \Bar{q}$ \;
+  }
+  $U, \Sigma, V^T \leftarrow SVD\_decompose(QP^T)$ \;
+  $A \leftarrow UV^T$ \;
+  $b \leftarrow \Bar{q} - A\Bar{p}$ \;
+  \Return{$A, b$}
+\end{algorithm}
+
+See $ex5.py$ for implementation in python and several running examples. To verify the algorithm is true, I randomly choose $P, A$ and $b$, and calculate $Q = AP+b$. Then I feed $P$ and $Q$ into my algorithm and see whether the results are the same as the chosen $A$ and $b$. Please just run $ex5.py$ and each time it will randomly generate an example.
+
+% Perform SVD decomposition on $P$ and $Q$, we get:
+% \begin{equation}
+%     P = U_1\Sigma_1 V_1^T, \qquad Q = U_2\Sigma_2 V_2^T.
+% \label{eq:2}
+% \end{equation}
+
+% Since the SVD decomposition of $P$ can be obtained by the diagonalization of $P^TP$ and $PP^T$.
+
+% Combining Eq(\ref{eq:1}) and Eq(\ref{eq:2}), we get:
+% \begin{equation*}
+%     V_1 \Sigma_1^2 V_1^T = P^TP = Q^TQ = V_2 \Sigma_2^2 V_2^T,
+% \end{equation*}
+% where both $V_1$ and $V_2$ are orthogonal matrices, and both $\Sigma_1$ and $\Sigma_2$ are diagnoal matrices.
+
+% Note that both $ V_1 \Sigma_1^2 V_1^T$ and $V_2 \Sigma_2^2 V_2^T$ are the diagonal decomposition of the matrix $P^TP$. Due to the fact the eigenvalues of a matrix are fixed and the elements of both $\Sigma_1$ and $\Sigma_2$ are in descending sort, we can safely derive that $\Sigma_1 = \Sigma_2$. And the elements of $\Sigma_1^2$ are the eigenvalues of $P^TP$.
+
+
+
+\end{document}

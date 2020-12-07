@@ -1,0 +1,292 @@
+\documentclass[
+  % all of the below options are optional and can be left out
+  % course name (default: 2IL50 Data Structures)
+  course = {{16-720B Computer Vision}},
+  % quartile (default: 3)
+  quartile = {{1}},
+  % assignment number/name (default: 1)
+  assignment = 6\ -\ Object\ Tracking\ in\ Videos,
+  % student name (default: Some One)
+  name = {{Kangle Deng}},
+  % student number, NOT S-number (default: 0123456)
+  % studentnumber = {{0123456 ; 0314159}},
+  % student email (default: s.one@student.tue.nl)
+  email = {{kangled@andrew.cmu.edu}},
+  % first exercise number (default: 1)
+  firstexercise = 1
+]{aga-homework}
+
+\usepackage{url}
+\usepackage{subfigure}
+\usepackage{xcolor}  	%高亮使用的颜色
+\definecolor{commentcolor}{RGB}{85,139,78}
+\definecolor{stringcolor}{RGB}{206,145,108}
+\definecolor{keywordcolor}{RGB}{34,34,250}
+\definecolor{backcolor}{RGB}{220,220,220}
+\usepackage{accsupp}	
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+\usepackage{listings}
+\lstset{						%高亮代码设置
+	language=python, 					%Python语法高亮
+	linewidth=0.9\linewidth,      		%列表list宽度
+	%basicstyle=\ttfamily,				%tt无法显示空格
+	commentstyle=\color{commentcolor},	%注释颜色
+	keywordstyle=\color{keywordcolor},	%关键词颜色
+	stringstyle=\color{stringcolor},	%字符串颜色
+	%showspaces=true,					%显示空格
+	numbers=left,						%行数显示在左侧
+	numberstyle=\tiny\emptyaccsupp,		%行数数字格式
+	numbersep=5pt,						%数字间隔
+	frame=single,						%加框
+	framerule=0pt,						%不划线
+	escapeinside=@@,					%逃逸标志
+	emptylines=1,						%
+	xleftmargin=3em,					%list左边距
+	backgroundcolor=\color{backcolor},	%列表背景色
+	tabsize=4,							%制表符长度为4个字符
+	% gobble=4,							%忽略每行代码前4个字符
+	basicstyle          =   \ttfamily,          % 基本代码风格
+    keywordstyle        =   \color{blue},         % 关键字风格
+    commentstyle        =   \rmfamily\itshape,  % 注释的风格，斜体
+    stringstyle         =   \ttfamily,  % 字符串风格
+    breaklines      =   true,   % 自动换行，建议不要写太长的行
+	}
+
+\begin{document}
+\section{Theory Questions}
+\noindent\textbf{Q1.1: Calculating the Jacobian}
+
+We have
+\begin{equation*}
+    \begin{aligned}
+    u' = (1+p_1)u + p_3v + p_5, \\
+    v' = p_2u + (1+p_4)v + p_6.
+    \end{aligned}
+\end{equation*}
+
+So
+\begin{equation*}
+    \frac{\partial \mathbf{W}}{\partial \mathbf{p}} = \left(\begin{array}{cccccc}
+       u  & 0 & v & 0 & 1 & 0 \\
+       0  & u & 0 & v & 0 & 1
+    \end{array}\right).
+\end{equation*}
+
+\noindent\textbf{Q1.2: Computational complexity Lucas Kanade}
+
+We analyze the complexity of Algorithm 1 step by step:
+\begin{itemize}
+    \item (2) Iterate $\mathbf{x}$ through the range of Template coordinates. Each warp requires $O(p)$ computation. So the complexity should be $O(np)$.
+    \item (3) Iterate $\mathbf{x}$ through the range of Template coordinates. So the complexity should be $O(n)$.
+    \item (4) The gradient $\nabla \mathbf{I}$ can be pre-calculated out of the loop with complexity $O(m)$. Iterate $\mathbf{x}$ through the range of Template coordinates. So the complexity should be $O(n)$.
+    \item (5) Iterate $\mathbf{x}$ through the range of Template coordinates. For each $\mathbf{x}$, evaluating the Jacobian requires $O(p)$. So the complexity should be $O(np)$.
+    \item (6) Iterate $\mathbf{x}$ through the range of Template coordinates. For each $\mathbf{x}$, computing the steepest descent requires $O(p)$. So the complexity should be $O(np)$.
+    \item (7) Iterate $\mathbf{x}$ through the range of Template coordinates. For each $\mathbf{x}$, calculation requires $O(p^2)$. So the complexity should be $O(np^2)$.
+    \item (8) The summation requires $O(np)$. And the matrix multiplication requires $O(p^3)$. Assuming $p^3 << n$, the complexity should be $O(np)$.
+    \item (9) Updating $p$ requires $O(p)$.
+\end{itemize}
+
+In conclusion, the total complexity of one runtime iteration is $O(np^2)$.
+
+\noindent\textbf{Q1.3: Computational complexity Matthews-Baker}
+
+We analyze the complexity of pre-computation in Algorithm 2 step by step:
+\begin{itemize}
+    \item (1) Evaluating $\nabla \mathbf{T}$ requires $O(n)$.
+    \item (2) Iterate $\mathbf{x}$ through the range of Template coordinates. For each $\mathbf{x}$, evaluating the Jacobian requires $O(p)$. So the complexity should be $O(np)$.
+    \item (3) Iterate $\mathbf{x}$ through the range of Template coordinates. For each $\mathbf{x}$, computing the steepest descent requires $O(p)$. So the complexity should be $O(np)$.
+    \item (4) The matrix multiplication requires $O(np^2)$.
+\end{itemize}
+
+So the total complexity of the pre-computation is $O(np^2)$.
+
+We analyze the complexity of each runtime iteration step by step:
+\begin{itemize}
+    \item (7) Iterate $\mathbf{x}$ through the range of Template coordinates. Each warp requires $O(p)$ computation. So the complexity should be $O(np)$.
+    \item (8) Iterate $\mathbf{x}$ through the range of Template coordinates. So the complexity should be $O(n)$.
+    \item (9) The summation requires $O(np)$. And the matrix multiplication requires $O(p^3)$. Assuming $p^3 << n$, the complexity should be $O(np)$.
+    \item (10) Updating $p$ requires $O(p)$.
+\end{itemize}
+
+So the complexity of each runtime iteration step is $O(np)$. This is less than the run time of the regular Lucas-Kanade method.
+
+\section{Implementing the Trackers}
+\noindent\textbf{Q2.1:} 
+The code is as below:
+\begin{lstlisting}
+def LucasKanade(It, It1, rect):
+    # Input: 
+    #   It: template image
+    #   It1: Current image
+    #   rect: Current position of the object
+    #   (top left, bot right coordinates: x1, y1, x2, y2)
+    # Output:
+    #   p: movement vector dx, dy
+    
+    # set up the threshold
+    threshold = 0.01875
+    maxIters = 100
+    p = np.zeros(2)          
+    x1,y1,x2,y2 = rect
+
+    # put your implementation here
+    H, W = It.shape
+    tH, tW = int(y2 - y1), int(x2 - x1)
+    iter_cnt = 0
+
+    It1Spline = RectBivariateSpline(np.arange(H), np.arange(W), It1)
+    ItSpline = RectBivariateSpline(np.arange(H), np.arange(W), It)
+    T = ItSpline(np.arange(tH)+y1, np.arange(tW)+x1)
+
+    Iy, Ix = np.gradient(It1)
+    IySpline = RectBivariateSpline(np.arange(H), np.arange(W), Iy)
+    IxSpline = RectBivariateSpline(np.arange(H), np.arange(W), Ix)
+
+    while True:
+        dx, dy = p
+        y, x = np.arange(tH), np.arange(tW)
+        y = y + y1 + dy
+        x = x + x1 + dx
+        imWarp = It1Spline(y, x)
+        gradWarp = np.stack([IySpline(y,x), IxSpline(y,x)], axis=-1)
+        imerr = T - imWarp
+        A = gradWarp.reshape(-1, 2)
+        b = imerr.reshape(-1)
+        dp = np.linalg.lstsq(A, b, rcond=None)[0]
+        p = p + dp[::-1]
+        iter_cnt += 1
+        if np.linalg.norm(dp) <= threshold or iter_cnt > maxIters:
+            break
+    return p
+\end{lstlisting}
+
+\noindent\textbf{Q2.2:}
+The code is as below:
+\begin{lstlisting}
+def LucasKanadeAffine(It, It1, rect):
+    # Input: 
+    #   It: template image
+    #   It1: Current image
+    #   rect: Current position of the object
+    #   (top left, bot right coordinates: x1, y1, x2, y2)
+    # Output:
+    #   M: the Affine warp matrix [2x3 numpy array]
+
+    # set up the threshold
+    threshold = 0.01875
+    maxIters = 100
+    p = np.zeros((6,))
+    x1,y1,x2,y2 = rect
+
+    # put your implementation here
+    H, W = It.shape
+    tH, tW = int(y2 - y1), int(x2 - x1)
+    iter_cnt = 0
+
+    It1Spline = RectBivariateSpline(np.arange(H), np.arange(W), It1)
+    ItSpline = RectBivariateSpline(np.arange(H), np.arange(W), It)
+    T = ItSpline(np.arange(tH)+y1, np.arange(tW)+x1)
+
+    Iy, Ix = np.gradient(It1)
+    IySpline = RectBivariateSpline(np.arange(H), np.arange(W), Iy)
+    IxSpline = RectBivariateSpline(np.arange(H), np.arange(W), Ix)
+
+    y, x = np.arange(tH)+y1, np.arange(tW)+x1
+    jacob = np.zeros((tH,tW,2,6), dtype=np.float32)
+    jacob[:,:,0,4] = jacob[:,:,1,5] = 1
+    jacob[:,:,0,0] = jacob[:,:,1,1] = y[:,None]
+    jacob[:,:,0,2] = jacob[:,:,1,3] = x[None,:]
+
+    y_grid, x_grid = np.meshgrid(y, x, indexing='ij')
+
+    while True:
+        y_w = (1+p[0]) * y_grid.flatten() + p[2] * x_grid.flatten() + p[4]
+        x_w = p[1] * y_grid.flatten() + (1 + p[3]) * x_grid.flatten() + p[5]
+        imWarp = It1Spline(y_w, x_w, grid=False).reshape(tH,tW)
+        gradWarp = np.stack([IySpline(y_w,x_w, grid=False), IxSpline(y_w,x_w, grid=False)], axis=-1).reshape(tH,tW,2)
+        imerr = T - imWarp
+        
+        A = gradWarp[:,:,0,None] * jacob[:,:,0,:] + gradWarp[:,:,1,None] * jacob[:,:,1,:]
+        A = A.reshape(-1, 6)
+        b = imerr.reshape(-1)
+        dp = np.linalg.lstsq(A, b, rcond=None)[0]
+        p = p + dp
+        iter_cnt += 1
+        if np.linalg.norm(dp) <= threshold or iter_cnt > maxIters:
+            break
+
+    # reshape the output affine matrix
+    M = np.array([[1.0+p[3], p[1], p[5]],
+                [p[2], 1.0+p[0], p[4]]]).reshape(2, 3)
+
+    return M
+\end{lstlisting}
+
+\noindent\textbf{Q2.3:}
+The code is as below:
+\begin{lstlisting}
+def InverseCompositionAffine(It, It1, rect):
+    # Input: 
+    #   It: template image
+    #   It1: Current image
+    #   rect: Current position of the object
+    #   (top left, bot right coordinates: x1, y1, x2, y2)
+    # Output:
+    #   M: the Affine warp matrix [2x3 numpy array]
+
+    # set up the threshold
+    threshold = 0.01875
+    maxIters = 100
+    p = np.zeros((6,1))
+    x1,y1,x2,y2 = rect
+
+    # put your implementation here
+    H, W = It.shape
+    tH, tW = int(y2 - y1), int(x2 - x1)
+    iter_cnt = 0
+    It1Spline = RectBivariateSpline(np.arange(H), np.arange(W), It1)
+    ItSpline = RectBivariateSpline(np.arange(H), np.arange(W), It)
+    T = ItSpline(np.arange(tH)+y1, np.arange(tW)+x1)
+
+    Iy, Ix = np.gradient(T)
+    y, x = np.arange(tH)+y1, np.arange(tW)+x1
+    jacob = np.zeros((tH,tW,2,6), dtype=np.float32)
+    jacob[:,:,0,4] = jacob[:,:,1,5] = 1
+    jacob[:,:,0,0] = jacob[:,:,1,1] = y[:,None]
+    jacob[:,:,0,2] = jacob[:,:,1,3] = x[None,:]
+    A = Iy[:,:,None] * jacob[:,:,0,:] + Ix[:,:,None] * jacob[:,:,1,:]
+    A = A.reshape(-1, 6)
+
+    y_grid, x_grid = np.meshgrid(y, x, indexing='ij')
+
+    while True:
+        y_w = (1+p[0]) * y_grid.flatten() + p[2] * x_grid.flatten() + p[4]
+        x_w = p[1] * y_grid.flatten() + (1 + p[3]) * x_grid.flatten() + p[5]
+        imWarp = It1Spline(y_w, x_w, grid=False).reshape(tH,tW)
+        imerr = imWarp - T
+
+        b = imerr.reshape(-1)
+        dp = np.linalg.lstsq(A, b, rcond=None)[0]
+        dP = np.eye(3)
+        dP[:2, :] += dp.reshape(3,2).T
+        dP_inv = np.linalg.inv(dP)
+        P_new = np.eye(3)
+        P_new[:2, :] += p.reshape(3,2).T
+        P_new = P_new.dot(dP_inv)
+        p = (P_new - np.eye(3))[:2,:].T.flatten()
+        iter_cnt += 1
+        if np.linalg.norm(dp) <= threshold or iter_cnt > maxIters:
+            break
+
+    # reshape the output affine matrix
+    M = np.array([[1.0+p[3], p[1], p[5]],
+                [p[2], 1.0+p[0], p[4]]]).reshape(2, 3)
+
+    return M
+\end{lstlisting}
+
+\noindent\textbf{Q2.4:} 
+
+
+\end{document}
